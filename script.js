@@ -7,14 +7,14 @@ const FORM_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLSck3lQJVQF8GRby6_nIw_ycqPhb1WhXpTmIBqZD6fYEn88wKQ/formResponse";
 
 const FIELD_MAP = {
-  participant_id: "entry.1669962716",
-  age: "entry.1354824015",
-  gender: "entry.1466428792",
-  video: "entry.1709753112",
-  clip: "entry.1609359120",
-  variant: "entry.1972229480",
-  rating: "entry.1204760037",
-  timestamp: "entry.1917345529"
+  participant_id: "entry.301448104",
+  age: "entry.1650670881",
+  gender: "entry.2028815044",
+  video: "entry.728121523",
+  clip: "entry.1329244795",
+  variant: "entry.1963389551",
+  rating: "entry.1711735973",
+  timestamp: "entry.388067952"
 };
 
 const variants = [
