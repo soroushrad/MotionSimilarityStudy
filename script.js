@@ -3,6 +3,20 @@ let selectedVideos = [];
 let currentIndex = 0;
 let responses = [];
 
+const FORM_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSck3lQJVQF8GRby6_nIw_ycqPhb1WhXpTmIBqZD6fYEn88wKQ/formResponse";
+
+const FIELD_MAP = {
+  participant_id: "entry.1669962716",
+  age: "entry.1354824015",
+  gender: "entry.1466428792",
+  video: "entry.1709753112",
+  clip: "entry.1609359120",
+  variant: "entry.1972229480",
+  rating: "entry.1204760037",
+  timestamp: "entry.1917345529"
+};
+
 const variants = [
   "jerk_NZ1",
   "jerk_NZ2",
@@ -13,7 +27,6 @@ const variants = [
   "timewarp_NZ2"
 ];
 
-// ساخت لیست ویدیوها (15 کلیپ × 7 حالت)
 const allVideos = [];
 
 for (let i = 1; i <= 15; i++) {
@@ -29,7 +42,7 @@ function startStudy() {
   const gender = document.getElementById("gender").value;
 
   if (!age || !gender) {
-    alert("Please fill in age and gender.");
+    alert("Please fill in age range and gender.");
     return;
   }
 
@@ -130,35 +143,40 @@ function saveAnswer(rating) {
   }
 }
 
-function downloadCSV() {
-  let csv = "participant_id,age,gender,video,clip,variant,rating,timestamp\n";
+async function downloadCSV() {
+  const submitButton = document.querySelector("#endScreen button");
 
-  responses.forEach(r => {
-    csv += [
-      cleanCSV(r.participant_id),
-      cleanCSV(r.age),
-      cleanCSV(r.gender),
-      cleanCSV(r.video),
-      cleanCSV(r.clip),
-      cleanCSV(r.variant),
-      cleanCSV(r.rating),
-      cleanCSV(r.timestamp)
-    ].join(",") + "\n";
-  });
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent = "Submitting...";
+  }
 
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  for (const r of responses) {
+    const formData = new FormData();
 
-  const fileName = `${participant.id}_${participant.age}_${getDateTimeString()}.csv`;
+    formData.append(FIELD_MAP.participant_id, r.participant_id);
+    formData.append(FIELD_MAP.age, r.age);
+    formData.append(FIELD_MAP.gender, r.gender);
+    formData.append(FIELD_MAP.video, r.video);
+    formData.append(FIELD_MAP.clip, r.clip);
+    formData.append(FIELD_MAP.variant, r.variant);
+    formData.append(FIELD_MAP.rating, r.rating);
+    formData.append(FIELD_MAP.timestamp, r.timestamp);
 
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = fileName;
+    try {
+      await fetch(FORM_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: formData
+      });
 
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+      await delay(200);
+    } catch (error) {
+      console.log("Submission error:", error);
+    }
+  }
 
-  alert("File downloaded successfully.");
+  alert("Responses submitted successfully.");
 
   location.reload();
 }
@@ -190,6 +208,7 @@ function extractVariant(filename) {
   const found = variants.find(v =>
     filename.toLowerCase().includes(v.toLowerCase())
   );
+
   return found || "";
 }
 
@@ -197,16 +216,6 @@ function shuffleArray(array) {
   array.sort(() => Math.random() - 0.5);
 }
 
-function getDateTimeString() {
-  const now = new Date();
-
-  return `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}_${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}${String(now.getSeconds()).padStart(2, "0")}`;
-}
-
-function cleanCSV(value) {
-  const str = String(value);
-  if (str.includes(",") || str.includes('"') || str.includes("\n")) {
-    return `"${str.replace(/"/g, '""')}"`;
-  }
-  return str;
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
