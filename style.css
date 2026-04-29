@@ -160,3 +160,9 @@ select {
     min-height: 60px;
   }
 }
+
+/* حذف باکس بیرونی */
+.container {
+  background: transparent !important;
+  box-shadow: none !important;
+}
