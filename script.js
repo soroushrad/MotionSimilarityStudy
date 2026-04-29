@@ -13,6 +13,7 @@ const variants = [
   "timewarp_NZ2"
 ];
 
+// ساخت لیست ویدیوها (15 کلیپ × 7 حالت)
 const allVideos = [];
 
 for (let i = 1; i <= 15; i++) {
@@ -24,14 +25,15 @@ for (let i = 1; i <= 15; i++) {
 }
 
 function startStudy() {
-  const id = document.getElementById("participantId").value.trim();
   const age = document.getElementById("age").value.trim();
   const gender = document.getElementById("gender").value;
 
-  if (!id || !age || !gender) {
-    alert("Please fill in all fields.");
+  if (!age || !gender) {
+    alert("Please fill in age and gender.");
     return;
   }
+
+  const id = generateParticipantId();
 
   participant = {
     id,
@@ -42,7 +44,7 @@ function startStudy() {
   selectedVideos = selectVideosForParticipant(allVideos, 3);
 
   if (selectedVideos.length === 0) {
-    alert("No videos selected. Please check video filenames.");
+    alert("No videos found. Check filenames.");
     return;
   }
 
@@ -63,10 +65,7 @@ function selectVideosForParticipant(videoList, numberOfClips) {
     const clip = extractClip(video);
     if (!clip) return;
 
-    if (!grouped[clip]) {
-      grouped[clip] = [];
-    }
-
+    if (!grouped[clip]) grouped[clip] = [];
     grouped[clip].push(video);
   });
 
@@ -79,18 +78,15 @@ function selectVideosForParticipant(videoList, numberOfClips) {
 
   selectedClips.forEach(clip => {
     variants.forEach(variant => {
-      const found = grouped[clip].find(video =>
-        video.toLowerCase().includes(variant.toLowerCase())
+      const found = grouped[clip].find(v =>
+        v.toLowerCase().includes(variant.toLowerCase())
       );
 
-      if (found) {
-        finalVideos.push(found);
-      }
+      if (found) finalVideos.push(found);
     });
   });
 
   shuffleArray(finalVideos);
-
   return finalVideos;
 }
 
@@ -100,13 +96,13 @@ function showVideo() {
   document.getElementById("progressText").textContent =
     `Video ${currentIndex + 1} of ${selectedVideos.length}`;
 
-  const videoPlayer = document.getElementById("videoPlayer");
+  const player = document.getElementById("videoPlayer");
 
-  videoPlayer.src = `videos/${video}`;
-  videoPlayer.load();
+  player.src = `videos/${video}`;
+  player.load();
 
-  videoPlayer.play().catch(() => {
-    console.log("Autoplay was blocked. User can press play manually.");
+  player.play().catch(() => {
+    console.log("Autoplay blocked");
   });
 }
 
@@ -137,22 +133,20 @@ function saveAnswer(rating) {
 function downloadCSV() {
   let csv = "participant_id,age,gender,video,clip,variant,rating,timestamp\n";
 
-  responses.forEach(row => {
+  responses.forEach(r => {
     csv += [
-      cleanCSV(row.participant_id),
-      cleanCSV(row.age),
-      cleanCSV(row.gender),
-      cleanCSV(row.video),
-      cleanCSV(row.clip),
-      cleanCSV(row.variant),
-      cleanCSV(row.rating),
-      cleanCSV(row.timestamp)
+      cleanCSV(r.participant_id),
+      cleanCSV(r.age),
+      cleanCSV(r.gender),
+      cleanCSV(r.video),
+      cleanCSV(r.clip),
+      cleanCSV(r.variant),
+      cleanCSV(r.rating),
+      cleanCSV(r.timestamp)
     ].join(",") + "\n";
   });
 
-  const blob = new Blob([csv], {
-    type: "text/csv;charset=utf-8;"
-  });
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
 
   const fileName = `${participant.id}_${participant.age}_${getDateTimeString()}.csv`;
 
@@ -164,9 +158,27 @@ function downloadCSV() {
   link.click();
   document.body.removeChild(link);
 
-  alert("Result file downloaded successfully.");
+  alert("File downloaded successfully.");
 
   location.reload();
+}
+
+function generateParticipantId() {
+  const now = new Date();
+
+  const date =
+    now.getFullYear().toString() +
+    String(now.getMonth() + 1).padStart(2, "0") +
+    String(now.getDate()).padStart(2, "0");
+
+  const time =
+    String(now.getHours()).padStart(2, "0") +
+    String(now.getMinutes()).padStart(2, "0") +
+    String(now.getSeconds()).padStart(2, "0");
+
+  const random = Math.floor(1000 + Math.random() * 9000);
+
+  return `P_${date}_${time}_${random}`;
 }
 
 function extractClip(filename) {
@@ -175,10 +187,9 @@ function extractClip(filename) {
 }
 
 function extractVariant(filename) {
-  const found = variants.find(variant =>
-    filename.toLowerCase().includes(variant.toLowerCase())
+  const found = variants.find(v =>
+    filename.toLowerCase().includes(v.toLowerCase())
   );
-
   return found || "";
 }
 
@@ -189,26 +200,13 @@ function shuffleArray(array) {
 function getDateTimeString() {
   const now = new Date();
 
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  const hour = String(now.getHours()).padStart(2, "0");
-  const minute = String(now.getMinutes()).padStart(2, "0");
-  const second = String(now.getSeconds()).padStart(2, "0");
-
-  return `${year}${month}${day}_${hour}${minute}${second}`;
+  return `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}_${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}${String(now.getSeconds()).padStart(2, "0")}`;
 }
 
 function cleanCSV(value) {
-  const stringValue = String(value);
-
-  if (
-    stringValue.includes(",") ||
-    stringValue.includes('"') ||
-    stringValue.includes("\n")
-  ) {
-    return `"${stringValue.replace(/"/g, '""')}"`;
+  const str = String(value);
+  if (str.includes(",") || str.includes('"') || str.includes("\n")) {
+    return `"${str.replace(/"/g, '""')}"`;
   }
-
-  return stringValue;
+  return str;
 }
