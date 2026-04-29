@@ -1,73 +1,162 @@
+/* =========================
+   GLOBAL
+========================= */
+
 body {
+  min-height: 100vh;
   font-family: Arial, sans-serif;
-  background: #f2f2f2;
-  margin: 0;
-  padding: 0;
 }
 
-.container {
-  max-width: 900px;
-  margin: 40px auto;
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-}
+/* =========================
+   UTILITIES
+========================= */
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
-h1, h2, h3 {
-  text-align: center;
-}
+/* =========================
+   CARD DESIGN
+========================= */
 
-label {
-  display: block;
-  margin-top: 18px;
-  font-weight: bold;
-}
-
-input, select {
-  width: 100%;
-  padding: 10px;
-  margin-top: 6px;
-  font-size: 16px;
-}
-
-button {
-  padding: 12px 18px;
-  margin-top: 20px;
-  font-size: 16px;
+.card {
+  border-radius: 16px;
   border: none;
-  border-radius: 8px;
-  background: #222;
-  color: white;
-  cursor: pointer;
 }
 
-button:hover {
-  background: #444;
+.card h1,
+.card h2,
+.card h3 {
+  font-weight: 600;
 }
+
+/* =========================
+   VIDEO
+========================= */
 
 video {
   width: 100%;
-  margin-top: 20px;
   background: black;
-  border-radius: 10px;
+  border-radius: 12px;
+  object-fit: contain;
 }
 
-.rating-buttons {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  margin-top: 20px;
+/* =========================
+   BUTTONS
+========================= */
+
+button {
+  transition: all 0.2s ease;
 }
 
-.rating-buttons button {
-  background: #0066cc;
+button:active {
+  transform: scale(0.97);
 }
 
-.rating-buttons button:hover {
-  background: #004c99;
+/* Rating buttons */
+.rating-btn {
+  min-height: 60px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Hover effect */
+.rating-btn:hover {
+  background-color: #0d6efd;
+  color: white;
+}
+
+/* =========================
+   INPUTS
+========================= */
+
+input,
+select {
+  border-radius: 8px !important;
+}
+
+/* =========================
+   TEXT
+========================= */
+
+.text-muted {
+  font-size: 0.95rem;
+}
+
+/* =========================
+   RESPONSIVE DESIGN
+========================= */
+
+/* موبایل */
+@media (max-width: 576px) {
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  h3 {
+    font-size: 1rem;
+  }
+
+  .container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .card {
+    padding: 20px !important;
+  }
+
+  .rating-btn {
+    font-size: 15px;
+    min-height: 55px;
+  }
+
+  video {
+    border-radius: 10px;
+  }
+}
+
+/* تبلت */
+@media (min-width: 577px) and (max-width: 992px) {
+
+  h1 {
+    font-size: 1.9rem;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+  }
+
+  .rating-btn {
+    min-height: 58px;
+  }
+}
+
+/* دسکتاپ */
+@media (min-width: 993px) {
+
+  h1 {
+    font-size: 2.2rem;
+  }
+
+  h2 {
+    font-size: 1.6rem;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+  }
+
+  .rating-btn {
+    min-height: 60px;
+  }
 }
