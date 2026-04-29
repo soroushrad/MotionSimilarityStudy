@@ -9,11 +9,13 @@
 
 <div class="container">
 
+  <!-- Start Screen -->
   <div id="startScreen">
     <h1>Motion Similarity Study</h1>
 
-    <label>Participant ID</label>
-    <input type="text" id="participantId" placeholder="e.g., P001">
+    <p style="text-align:center; margin-bottom:20px;">
+      Please enter your information to begin the study.
+    </p>
 
     <label>Age</label>
     <input type="number" id="age" placeholder="e.g., 27">
@@ -27,10 +29,12 @@
       <option value="Prefer not to say">Prefer not to say</option>
     </select>
 
-    <button onclick="startStudy()">Next</button>
+    <button onclick="startStudy()">Start</button>
   </div>
 
+  <!-- Study Screen -->
   <div id="studyScreen" class="hidden">
+
     <h2 id="progressText"></h2>
 
     <video id="videoPlayer" controls autoplay muted></video>
@@ -43,16 +47,26 @@
       <button onclick="saveAnswer(3)">3 = Somewhat Similar</button>
       <button onclick="saveAnswer(4)">4 = Not Similar</button>
     </div>
+
   </div>
 
+  <!-- End Screen -->
   <div id="endScreen" class="hidden">
+
     <h1>Thank you!</h1>
-    <p>You have completed the study.</p>
+    <p>Your responses have been recorded.</p>
+
     <button onclick="downloadCSV()">Submit and Download Result</button>
+
+    <p style="margin-top:20px; text-align:center; color:gray;">
+      Please make sure the file is downloaded successfully.
+    </p>
+
   </div>
 
 </div>
 
 <script src="script.js"></script>
+
 </body>
 </html>
